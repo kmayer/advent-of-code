@@ -3,24 +3,26 @@ require "expense_report"
 require "open-uri"
 
 RSpec.describe ExpenseReport do
-  subject(:report) { described_class.new(data.shuffle) }
+  subject(:report) { described_class.new }
 
   context "sample data" do
     let(:data) { [1721, 979, 366, 299, 675, 1456] }
-    it { expect(report.sum_to_2020).to eq(Set.new([1721, 299])) }
-    it { expect(report.sum_to_2020.inject(&:*)).to eq(514_579) }
+    it "take(2)" do expect(report.sum_to_2020(data)).to eq(Set.new([1721, 299])) end
+    it { expect(report.sum_to_2020(data).inject(&:*)).to eq(514_579) }
+    it "take(3)" do expect(report.sums_to(2020, 3, data, [])).to eq(Set.new([979, 366, 675])) end
+    it { expect(report.sums_to(2020, 3, data, []).inject(&:*)).to eq(241861950) }
   end
 
   context "problem data" do
-    let(:data) { 
-      # https://adventofcode.com/2020/day/1/input
-      array = []
-      File.open(File.expand_path("../fixtures/day_1.txt", __FILE__)) { |f|
-        f.each_line {|line| array << line.chomp.to_i }
+    let(:data) { @problem_data ||= Array.new.tap { |array|
+        # https://adventofcode.com/2020/day/1/input
+        File.open(File.expand_path("../fixtures/day_1.txt", __FILE__)) { |f|
+          f.each_line {|line| array << line.chomp.to_i }
+        }
       }
-      array
     }
-    it { expect(report.sum_to_2020).to eq(Set.new([249, 1771])) }
-    it { expect(report.sum_to_2020.inject(&:*)).to eq(440_979)}
+
+    it { expect(report.sum_to_2020(data).inject(&:*)).to eq(440_979)}
+    it { expect(report.sums_to(2020, 3, data, []).inject(&:*)).to eq(82_498_112) }
   end
 end
