@@ -1,6 +1,4 @@
-require "spec_helper"
 require "expense_report"
-require "open-uri"
 
 RSpec.describe ExpenseReport do
   subject(:report) { described_class.new }
