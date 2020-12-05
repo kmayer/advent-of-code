@@ -8,6 +8,7 @@ class Passport
     attributes = datum.split(/\s+/)
     attributes.each do |attr|
       field, value = attr.split(":")
+      fail ArgumentError, field unless FIELDS.include?(field)
       instance_variable_set("@#{field}", value)
     end
     @errors = []
@@ -28,20 +29,20 @@ class Passport
   end
 
   def valid?
-    present? && FIELDS.each { |f| add_error f, send("#{f}?") }
+    present? && FIELDS.each { |f| add_error "#{f}: #{send(f)}", send("#{f}?") }
     errors.empty?
   end
 
   def byr?
-    1920 <= byr.to_i && byr.to_i <= 2002
+    Range.new(1920, 2002) === byr.to_i
   end
 
   def iyr?
-    2010 <= iyr.to_i && iyr.to_i <= 2020
+    Range.new(2010, 2020) === iyr.to_i
   end
 
   def eyr?
-    2020 <= eyr.to_i && eyr.to_i <= 2030
+    Range.new(2020, 2030) === eyr.to_i
   end
 
   def hgt?
@@ -49,8 +50,9 @@ class Passport
 
     value, units = m.captures
     case units
-    when "cm" then 150 <= value.to_i && value.to_i <= 193
-    when "in" then 59 <= value.to_i && value.to_i <= 76
+    when "cm" then Range.new(150, 193) === value.to_i
+    when "in" then Range.new(59, 76) === value.to_i
+    else fail
     end
   end
 
@@ -60,7 +62,7 @@ class Passport
 
   EYE_COLORS = %w[amb blu brn gry grn hzl oth].freeze
   def ecl?
-    EYE_COLORS.include?(ecl.strip)
+    EYE_COLORS.include?(ecl)
   end
 
   def pid?
@@ -74,24 +76,14 @@ end
 
 class PassportBatch
   def initialize(data)
-    @data = data
+    @data = data.freeze
   end
 
   def passports
-    array = []
-    buf = ""
-
-    @data.each_line do |line|
-      if line.chomp =~ /^\s*$/
-        array << Passport.new(buf)
-        buf = ""
-      else
-        buf << line.chomp << " "
+    Array.new.tap do |array|
+      @data.each_line("\n\n") do |line|
+        array << Passport.new(line)
       end
     end
-
-    array << Passport.new(buf) unless buf == ""
-
-    array
   end
 end
