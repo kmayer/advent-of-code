@@ -5,10 +5,10 @@ RSpec.describe ExpenseReport do
 
   context "sample data" do
     let(:data) { [1721, 979, 366, 299, 675, 1456] }
-    it "take(2)" do expect(report.sum_to_2020(data)).to eq(Set.new([1721, 299])) end
+    it "take(2)" do expect(report.sum_to_2020(data)).to eq([1721, 299]) end
     it { expect(report.sum_to_2020(data).inject(&:*)).to eq(514_579) }
-    it "take(3)" do expect(report.sums_to(2020, 3, data, [])).to eq(Set.new([979, 366, 675])) end
-    it { expect(report.sums_to(2020, 3, data, []).inject(&:*)).to eq(241861950) }
+    it "take(3)" do expect(report.sums_to(2020, 3, data)).to eq([979, 366, 675]) end
+    it { expect(report.sums_to(2020, 3, data).inject(&:*)).to eq(241861950) }
   end
 
   context "problem data" do
@@ -21,6 +21,6 @@ RSpec.describe ExpenseReport do
     }
 
     it { expect(report.sum_to_2020(data).inject(&:*)).to eq(440_979)}
-    it { expect(report.sums_to(2020, 3, data, []).inject(&:*)).to eq(82_498_112) }
+    it { expect(report.sums_to(2020, 3, data).inject(&:*)).to eq(82_498_112) }
   end
 end
