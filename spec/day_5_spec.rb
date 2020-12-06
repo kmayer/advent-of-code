@@ -10,8 +10,6 @@ RSpec.describe BoardingPass do
   ].each do |(code, row, col, id)|
     it "can decode #{code}" do
       boarding_pass = described_class.new(code)
-      expect(boarding_pass.row).to eq(row)
-      expect(boarding_pass.col).to eq(col)
       expect(boarding_pass.id).to eq(id)
     end
   end
