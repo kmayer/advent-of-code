@@ -48,16 +48,18 @@ class BagPolicy
   end
 
   def bags
-    rule_set.flat_map { |rule| [
-      [rule.color_code] * rule.quantity,                     # base case
-      [BagPolicy.find(rule.color_code).bags] * rule.quantity # recursive definition
-    ].flatten }
+    rule_set.flat_map { |rule| ([
+      rule.color_code,                       # base case
+      self.class.find(rule.color_code).bags, # recursive definition
+     ] * rule.quantity)
+     .flatten
+    }
   end
 
   class << self
     # A little "Active Record" pattern
     def find(color_code)
-      return color_code if color_code.is_a?(BagPolicy)
+      return color_code if color_code.is_a?(self)
       @@policies.fetch(color_code)
     end
 
