@@ -7,7 +7,7 @@ RSpec.describe BoardingPass do
     ["BFFFBBFRRR", 70, 7, 567],
     ["FFFBBBFRRR", 14, 7, 119],
     ["BBFFBBFRLL", 102, 4, 820],
-  ].each do |(code, row, col, id)|
+  ].each do |(code, _row, _col, id)|
     it "can decode #{code}" do
       boarding_pass = described_class.new(code)
       expect(boarding_pass.id).to eq(id)

@@ -1,6 +1,5 @@
 class Passport
-  FIELDS = %w[byr iyr eyr hgt hcl ecl pid cid]
-  attr_reader *FIELDS
+  FIELDS = %w[byr iyr eyr hgt hcl ecl pid cid].each { |f| attr_reader f.to_sym }
   attr_reader :errors
 
   def initialize(datum)
