@@ -3,7 +3,7 @@ class HandheldVM
   attr_reader :program
 
   def initialize(program_file)
-    @program = program_file.each_line.to_a.map { |line| Instruction.build(line) }
+    @program = program_file.each_line.map { |line| Instruction.build(line) }
     @acc = 0
     @pc = 0
     @halted = true
@@ -12,11 +12,11 @@ class HandheldVM
   def reset
     self.acc = 0
     self.pc = 0
-    @program.each(&:reset)
+    program.each(&:reset)
   end
 
   def inspect
-    code = @program.map(&:inspect)
+    code = program.map(&:inspect)
     code[pc] = "<#{code[pc]}>" # Highlight the current instruction
     "#<HandheldVM @pc:#{pc} @acc:#{acc} @program:[#{code.join(', ')}]"
   end
@@ -26,7 +26,7 @@ class HandheldVM
     # $stderr.puts "< #{self.inspect}"
     loop do
       fail RuntimeError, pc if pc < 0 # Never happens, but in Ruby, a negative index would do unexpected things
-      break if program[pc].nil?
+      break if next_instruction.nil?
       break if halted
       if block_given?
         yield self

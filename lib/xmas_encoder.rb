@@ -10,13 +10,13 @@ class XmasEncoder
     
     loop do
       value = stream.next
-      return value if preamble.combination(2).all? { |pair| pair.inject(&:+) != value }
+      return value if preamble.combination(2).none? { |pair| pair.inject(&:+) == value }
       preamble.shift; preamble << value
     end
   end
 
   def sequence(total)
-    (2..(data_stream.length)).each do |length|
+    (2..data_stream.length).each do |length|
       data_stream.each_cons(length) do |seq|
         return seq if seq.inject(&:+) == total
       end
