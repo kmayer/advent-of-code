@@ -313,7 +313,7 @@ RSpec.describe "Seating System" do
     let(:data) { File.read(File.expand_path("../fixtures/day_11.txt", __FILE__)) }
     let(:seat_map) { Seat.build_map(data) }
 
-    it "has a solution" do
+    it "has a solution", slow: true do
       fin = Seat.solution(seat_map)
 
       expect(fin.values.filter(&:occupied?).length).to eq(2_406)      
@@ -465,7 +465,7 @@ RSpec.describe "Seating System" do
     let(:data) { File.read(File.expand_path("../fixtures/day_11.txt", __FILE__)) }
     let(:seat_map) { Seat.build_map(data) }
 
-    it "has a solution" do
+    it "has a solution", slow: true do
       fin = Seat.solution(seat_map, rule_set: :rule_set_2)
 
       expect(fin.values.filter(&:occupied?).length).to eq(2_149)      
