@@ -45,11 +45,9 @@ class Cube
   end
 
   def neighbors
-    x,y,z = address
-    xr = (x-1)..(x+1)
-    yr = (y-1)..(y+1)
-    zr = (z-1)..(z+1)
-    @neighbors ||= xr.flat_map { |i| yr.flat_map { |j| zr.map { |k| [i,j,k] } } }.reject { |a| a == address }.freeze
+    dims = address.map {|dim| ((dim-1)..(dim+1)).to_a }
+    xr = dims.shift
+    @neighbors ||= xr.product(*dims).reject { |a| a == address }.freeze
   end
 
   def cycle(grid)
@@ -92,11 +90,13 @@ class Cube
       end
     end
 
-    def grid(data)
+    def grid(data, dimensions: 3)
       Hash.new { |g, address| g[address] = new(address, INACTIVE) }.tap do |grid|
         data.each_line(chomp: true).with_index do |line, x|
           line.split("").each.with_index do |cell, y|
-            cube = new([x,y,0], ((cell == "#") ? ACTIVE : INACTIVE))
+            address = [x,y]
+            address.concat([0] * (dimensions - 2))
+            cube = new(address, ((cell == "#") ? ACTIVE : INACTIVE))
             grid[cube.address] = cube
           end
         end
@@ -109,66 +109,6 @@ class Cube
         end
       end
     end
-  end
-end
-
-class HyperCube < Cube
-  def neighbors
-    x,y,z,w = address
-    xr = (x-1)..(x+1)
-    yr = (y-1)..(y+1)
-    zr = (z-1)..(z+1)
-    wr = (w-1)..(w+1)
-    @neighbors ||= xr.flat_map { |i| 
-      yr.flat_map { |j| 
-        zr.flat_map { |k| 
-          wr.map { |l| 
-            [i,j,k,l] 
-      } } } }
-      .reject { |a| a == address }.freeze
-  end
-
-  class << self
-    def grid(data)
-      Hash.new { |g, address| g[address] = new(address, INACTIVE) }.tap do |grid|
-        data.each_line(chomp: true).with_index do |line, x|
-          line.split("").each.with_index do |cell, y|
-            cube = new([x,y,0,0], ((cell == "#") ? ACTIVE : INACTIVE))
-            grid[cube.address] = cube
-          end
-        end
-
-        # populate the initial space with all immediate neighbors
-        grid.values.filter(&:active?).each do |cell|
-          cell.neighbors.each do |address|
-            grid[address] # will create if it doesn't exist
-          end
-        end
-      end
-    end
-
-    def render(grid, t: "-")
-      xr,yr,zr,wr = grid.keys.inject([0..0,0..0,0..0,0..0]) { |ranges, address|
-        address.each.with_index do |v, i|
-          range = ranges[i]
-          next if range === v
-          rmin = [range.min, v].min
-          rmax = [range.max, v].max
-          ranges[i] = rmin..rmax
-        end
-        ranges
-      }
-      $stderr.puts "Rendering (t = #{t}) #{[xr,yr,zr,wr].inspect}"
-      wr.each do |w|
-        zr.each do |z|
-          $stderr.puts "z=#{z}, w=#{w}"
-          xr.each do |x|
-            $stderr.puts yr.map { |y| grid[[x,y,z,w]].state.to_s}.join
-          end
-        end
-      end
-    end
-
   end
 end
 
@@ -332,7 +272,7 @@ RSpec.describe "Conway Cubes" do
     end
   end
 
-  describe HyperCube, slow: true do
+  describe "HyperCube" do
     it "test data: after 6 cycles" do
       data = 
         <<~EOT
@@ -341,7 +281,7 @@ RSpec.describe "Conway Cubes" do
         ###
         EOT
   
-      grid = HyperCube.grid(data)
+      grid = Cube.grid(data, dimensions: 4)
 
       # HyperCube.render(grid, t: 0)
 
@@ -351,7 +291,7 @@ RSpec.describe "Conway Cubes" do
         end
         grid.values.each(&:apply)
   
-        # HyperCube.render(grid, t: t)          
+        # Cube.render(grid, t: t)          
       end
 
       expect(grid.values.filter(&:active?).count).to eq(848)
@@ -370,7 +310,7 @@ RSpec.describe "Conway Cubes" do
         ..#.#.##
         EOT
   
-      grid = HyperCube.grid(data)
+      grid = Cube.grid(data, dimensions: 4)
 
       # HyperCube.render(grid, t: 0)
 
