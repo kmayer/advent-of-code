@@ -9,9 +9,9 @@ services:
       - type: bind
         source: ..
         target: /workspace
-      - type: bind
-        source: ${HOME}${USERPROFILE}/.ssh
-        target: /home/developer/.ssh
+      # - type: bind
+      #   source: ${HOME}${USERPROFILE}/.ssh
+      #   target: /home/developer/.ssh
     working_dir: /workspace
     command: sleep infinity
     environment:
