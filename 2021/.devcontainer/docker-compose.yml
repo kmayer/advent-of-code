@@ -1,0 +1,18 @@
+version: "3.2"
+services:
+  app:
+    user: developer
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ..
+        target: /workspace
+      - type: bind
+        source: ${HOME}${USERPROFILE}/.ssh
+        target: /home/developer/.ssh
+    working_dir: /workspace
+    command: sleep infinity
+    environment:
+      BUNDLE_PATH: vendor/bundle
