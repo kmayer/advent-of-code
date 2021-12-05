@@ -2,7 +2,7 @@
 
 require "minitest/autorun"
 
-class Day1 < Minitest::Test
+class Day__ < Minitest::Test
   def setup
     @sample_input = [
     ]
