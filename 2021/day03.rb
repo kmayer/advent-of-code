@@ -61,7 +61,7 @@ class Day03 < Minitest::Test
     end.join.to_i(2)
   end
 
-  def c02_scrubber(input)
+  def co2_scrubber(input)
     rating(input) do |zeros, ones, _, index, input|
       input.delete_if { |bits| bits[index] == ((ones >= zeros) ? 1 : 0) }
       break input.first if input.length == 1
