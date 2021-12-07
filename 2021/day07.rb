@@ -43,8 +43,9 @@ Class.new(Minitest::Test) do
     assert_equal 356179, fuel
   end
 
+  # Triangular numbers: https://www.mathsisfun.com/algebra/triangular-numbers.html
   def sum_of(n)
-    (1..n).sum
+    n * (n + 1) / 2
   end
 
   def test_part2a
