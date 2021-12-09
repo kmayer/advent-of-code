@@ -1,17 +1,24 @@
 version: "3.2"
 services:
   app:
-    user: developer
+    user: ${USERNAME}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        USERNAME: ${USERNAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
     volumes:
       - type: bind
         source: ..
         target: /workspace
+      # If this project a .git (root) then this will let you push/pull
+      # From inside the container
+      # ${HOME}${USERPROFILE} is to support Windows
       # - type: bind
       #   source: ${HOME}${USERPROFILE}/.ssh
-      #   target: /home/developer/.ssh
+      #   target: /home/${USERNAME}/.ssh
     working_dir: /workspace
     command: sleep infinity
     environment:

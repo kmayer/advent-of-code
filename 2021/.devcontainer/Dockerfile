@@ -1,6 +1,6 @@
 FROM ruby:2.7.2
 
-RUN apt update \
+RUN apt-get update \
   && apt-get install -y vim sudo man
 COPY load-profile.sh /etc/profile.d/
 
