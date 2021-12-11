@@ -7,7 +7,7 @@ Class.new(Minitest::Test) do
     File.basename(__FILE__, '.rb').capitalize
   end
 
-  LINES = DATA.readlines.map(&:freeze).freeze
+  LINES = DATA.readlines.map(&:chomp).map(&:freeze).freeze
 
   def parser(lines)
     lines
