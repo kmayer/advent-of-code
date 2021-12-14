@@ -98,7 +98,7 @@ Class.new(Minitest::Test) do
 
   def setup
     @sample_input = parser(LINES)
-    @input = parser(<<~EOT.each_line.to_a)
+    @input = parser(<<~EOT.each_line)
       5421451741
       3877321568
       7583273864
@@ -191,7 +191,7 @@ Class.new(Minitest::Test) do
   def test_grid_tick
     counter = 0
 
-    grid = parser(<<~EOT.each_line.to_a)
+    grid = parser(<<~EOT.each_line)
       11111
       19991
       19191
@@ -199,7 +199,7 @@ Class.new(Minitest::Test) do
       11111
     EOT
 
-    expected = parser(<<~EOT.each_line.to_a)
+    expected = parser(<<~EOT.each_line)
       34543
       40004
       50005
@@ -213,7 +213,7 @@ Class.new(Minitest::Test) do
     assert_equal expected.energies, grid.energies
     assert_equal 9, counter
 
-    expected = parser(<<~EOT.each_line.to_a)
+    expected = parser(<<~EOT.each_line)
       45654
       51115
       61116
@@ -231,7 +231,7 @@ Class.new(Minitest::Test) do
     grid = @sample_input
     counter = 0
 
-    expected = parser(<<~EOT.each_line.to_a)
+    expected = parser(<<~EOT.each_line)
       6594254334
       3856965822
       6375667284
@@ -249,7 +249,7 @@ Class.new(Minitest::Test) do
     assert_equal expected.energies, grid.energies
     assert_equal 0, counter
 
-    expected = parser(<<~EOT.each_line.to_a)
+    expected = parser(<<~EOT.each_line)
       8807476555
       5089087054
       8597889608
